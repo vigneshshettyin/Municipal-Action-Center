@@ -4,13 +4,13 @@ from flask_sqlalchemy import SQLAlchemy
 # from werkzeug.utils import secure_filename
 from passlib.hash import sha256_crypt
 from datetime import datetime
-import json, requests
+# import json
 # import os
 
 
 app = Flask(__name__)
 app.secret_key = 'f9bf78b9a18ce6d46a0cd2b0b86df9da'
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:@localhost/bytecodeVelocity"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:@localhost/bytecodevelocity"
 db = SQLAlchemy(app)
 
 
@@ -95,9 +95,17 @@ def loginPage():
 @app.route('/requestPost', methods = ['GET', 'POST'])
 def requestPost():
     # TODO: Check for active session
-    if ('logged_in' in session and session['logged_in'] == True):
+    if('logged_in' in session and session['logged_in'] == True):
         response = Department.query.filter_by(email=session['email']).first()
         return render_template('dashboard.html', response=response)
+        # TODO:Get all form response from user
+        response = Department.query.filter_by(email=session['email']).all()
+        return render_template('dashboard.html', response=response)
+    else:
+        return redirect('/')
+
+@app.route('/submitRequest', methods = ['GET', 'POST'])
+def submitRequest():
     if(request.method == 'POST'):
         name = request.form.get('name')
         print(name)
@@ -109,17 +117,10 @@ def requestPost():
         subject = request.form.get('subject')
         editordata = request.form.get('editordata')
         print(editordata)
-        entry = Department(name=name, email=emaild, address=address,  zip=zip, city=city, wardno=wardno, subject=subject, details=editordata, statusmessage="Submitted", date=datetime.now())
+        entry = Department(name=name, email=emaild, address=address, zip=zip, city=city, wardno=wardno, subject=subject, details=editordata, statusmessage="Submitted", date=datetime.now())
         db.session.add(entry)
         db.session.commit()
-        # TODO:Get all form response from user
-        response = Department.query.filter_by(email=session['email']).all()
-        return render_template('dashboard.html', response=response)
-    else:
-        return redirect('/login')
-
-
-# TODO: Destroy session ( Logout Function)
+    return redirect('/requestPost')
 
 @app.route("/logout")
 def logout():
