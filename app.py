@@ -7,14 +7,10 @@ from datetime import datetime
 import json, requests
 # import os
 
-with open('config.json', 'r') as c:
-    jsondata = json.load(c)["jsondata"]
 
 app = Flask(__name__)
 
-app.secret_key = 'f9bf78b9a18ce6d46a0cd2b0b86df9da'
-# app.config['UPLOAD_FOLDER'] = jsondata['upload_location']
-app.config['SQLALCHEMY_DATABASE_URI'] = jsondata['databaseUri']
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:@localhost/bytecodeVelocity"
 db = SQLAlchemy(app)
 
 
@@ -31,16 +27,39 @@ class Adminlogin(db.Model):
 class Department(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
-    state = db.Column(db.String(80), nullable=False)
-    pincode = db.Column(db.String(80), nullable=False)
-    landmark = db.Column(db.String(80), nullable=False)
     phone = db.Column(db.String(80), nullable=False)
-    message = db.Column(db.String(500), nullable=False)
+    dob = db.Column(db.String(500), nullable=False)
+    gender = db.Column(db.String(500), nullable=False)
+    wardno = db.Column(db.String(500), nullable=False)
     statusflag = db.Column(db.String(80), nullable=False)
     statusMessage = db.Column(db.String(150), nullable=False)
     date = db.Column(db.String(12), nullable=True)
 
 # TODO: Register route to be written
+
+@app.route('/')
+def homePage():
+    return render_template('index.html')
+
+
+@app.route('/register', methods = ['GET', 'POST'])
+def registerPage():
+    # TODO: Check for active session
+    if ('logged_in' in session and session['logged_in'] == True):
+        return redirect('/requestPost')
+    if(request.method=='POST'):
+        name = request.form.get('name')
+        email = request.form.get('emailid')
+        password = sha256_crypt.encrypt(request.form.get('password'))
+        dob = request.form.get('dob')
+        gender = request.form.get('gender')
+        mobileno = request.form.get('mobileno')
+        wardno = request.form.get('wardno')
+        entry = Department(name=name, phone=mobileno, message=0, date=datetime.now(), email=email, password=password, dob=dob, gender=gender, statusflag=0, wardno=wardno )
+        db.session.add(entry)
+        db.session.commit()
+        flash("Registration Successfull", "success")
+    return render_template('signup.html')
 
 
 @app.route('/login', methods = ['GET', 'POST'])
@@ -48,7 +67,7 @@ def loginPage():
     # TODO: Check for active session
     if ('logged_in' in session and session['logged_in'] == True):
         response = Department.query.filter_by().all()
-        return render_template('dashboard.html', jsondata=jsondata, response=response)
+        return render_template('dashboard.html', response=response)
     if (request.method == 'POST'):
         email = request.form.get('email')
         password = request.form.get('password')
@@ -58,7 +77,7 @@ def loginPage():
             updateloginTime.lastlogin = datetime.now()
             updateloginTime.userType = "user"
             ip_address = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
-            auth = jsondata["ipfindApi"]
+            auth = "4ec76748-4cf5-43ec-a55e-a04a6cb8a1b3"
             url = 'https://ipfind.co/?auth=' + auth + '&ip=' + ip_address
             # print(url)
             r = requests.get(url)
@@ -76,21 +95,21 @@ def loginPage():
             session['user_email'] = email
             # TODO: Pull all posts from db and return it
             response = Department.query.filter_by().all()
-            return render_template('dashboard.html', jsondata=jsondata, response=response)
+            return render_template('dashboard.html', response=response)
             # TODO:Add a invalid login credentials message using flash
         else:
             # if (response == None or (sha256_crypt.verify(password, response.password) != 1)):
             flash("Invalid Credentials!", "danger")
-            return render_template('login.html', jsondata=jsondata)
+            return render_template('login.html')
     else:
-        return render_template('login.html', jsondata=jsondata)
+        return render_template('login.html')
 
 
 @app.route('/requestPost', methods = ['GET', 'POST'])
 def requestPost():
     # TODO: Check for active session
     if ('logged_in' in session and session['logged_in'] == True):
-        response = Department.query.filter_by(email= session['user_email']).all()
+        response = Department.query.filter_by(email = session['user_email']).all()
         if(request.method == 'POST'):
             pass
             # TODO:Get all form response from user
@@ -99,7 +118,7 @@ def requestPost():
         if(response.status==1):
             response = Department.query.filter_by(email=session['user_email']).all()
             message = response.statusMessage
-            return render_template('dashboard.html', jsondata=jsondata, message=message)
+            return render_template('dashboard.html', message=message)
     else:
         return ('/login')
 
