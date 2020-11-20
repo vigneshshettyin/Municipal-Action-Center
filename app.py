@@ -36,7 +36,6 @@ class Department(db.Model):
     email = db.Column(db.String(50), nullable=False)
     wardno = db.Column(db.String(80), nullable=False)
     zip = db.Column(db.String(80), nullable=False)
-    statusflag = db.Column(db.String(80), nullable=False)
     statusmessage = db.Column(db.String(150), nullable=False)
     date = db.Column(db.String(12), nullable=True)
 
@@ -63,7 +62,6 @@ def registerPage():
         db.session.add(entry)
         db.session.commit()
         session['logged_in'] = True
-        session['user_email'] = email
         flash("Registration Successfull", "success")
     return render_template('signup.html')
 
@@ -82,7 +80,7 @@ def loginPage():
             updateloginTime.lastlogin = datetime.now()
             # TODO:Invoke new session
             session['logged_in'] = True
-            session['user_email'] = email
+            session['email'] = email
             db.session.commit()
             return redirect('/requestPost')
             # TODO:Add a invalid login credentials message using flash
@@ -98,23 +96,25 @@ def loginPage():
 def requestPost():
     # TODO: Check for active session
     if ('logged_in' in session and session['logged_in'] == True):
-        response = Department.query.filter_by(email = session['user_email']).all()
+        response = Department.query.filter_by(email=session['email']).first()
         return render_template('dashboard.html', response=response)
-        if(request.method == 'POST'):
-            name = request.form.get('name')
-            email = request.form.get('email')
-            address = request.form.get('address')
-            city = request.form.get('city')
-            wardno = request.form.get('wardno')
-            zip = request.form.get('zip')
-            subject = request.form.get('subject')
-            message = request.form.get('editordata')
-            entry = Department(name=name, email=email, address=address,  zip=zip, city=city, wardno=wardno, subject=subject, details=message, statusflag=-1, statusmessage="Submitted", date=datetime.now())
-            db.session.add(entry)
-            db.session.commit()
-            # TODO:Get all form response from user
-            response = Department.query.filter_by(email=session['user_email']).all()
-            return render_template('dashboard.html', response=response)
+    if(request.method == 'POST'):
+        name = request.form.get('name')
+        print(name)
+        emaild = request.form.get('email')
+        address = request.form.get('address')
+        city = request.form.get('city')
+        wardno = request.form.get('wardno')
+        zip = request.form.get('zip')
+        subject = request.form.get('subject')
+        editordata = request.form.get('editordata')
+        print(editordata)
+        entry = Department(name=name, email=emaild, address=address,  zip=zip, city=city, wardno=wardno, subject=subject, details=editordata, statusmessage="Submitted", date=datetime.now())
+        db.session.add(entry)
+        db.session.commit()
+        # TODO:Get all form response from user
+        response = Department.query.filter_by(email=session['email']).all()
+        return render_template('dashboard.html', response=response)
     else:
         return redirect('/login')
 
@@ -123,11 +123,10 @@ def requestPost():
 
 @app.route("/logout")
 def logout():
+        session.pop('email')
         session.pop('logged_in')
-        session.pop('user_email')
         flash("Logged Out Successfully!", "success")
         return redirect('/login')
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

@@ -18,10 +18,10 @@
         </a>
         <ul class="nav justify-content-end" style="font-family: 'Montserrat', sans-serif;">
         <li class="nav-item">
-          <a class="nav-link active" href="index.html">Home</a>
+          <a class="nav-link active" href="/">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="Report.html">Issues</a>
+          <a class="nav-link" href="#">Issues</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Contact Us</a>
@@ -108,7 +108,7 @@
                 <div class="card " style="width: 27rem;background: #fdfdfd;border-radius: 20px;height: 20vh;justify-content: right;">
                     <div class="card-body">
                         <p class="card-title" style="font-family: 'Montserrat';font-weight: 700;font-size: 20px;color: #2E3D7D;"><img class="rounded-circle" alt="100x100" height="90px" width="90px" src="{{ url_for('static', filename='img/face.jpg') }}" data-holder-rendered="true">
-                        MAC
+                        {{ response.name}}
                         </n>
                         <span style="font-weight: 400;font-family: 'Montserrat';font-size: 10px;"><a href="#">Logout</a></span>
                         </p>
