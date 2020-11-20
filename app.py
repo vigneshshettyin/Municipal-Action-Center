@@ -28,8 +28,16 @@ class Adminlogin(db.Model):
 
 class Department(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    address = db.Column(db.String(80), nullable=False)
+    city = db.Column(db.String(80), nullable=False)
+    subject = db.Column(db.String(80), nullable=False)
+    details = db.Column(db.String(500), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
+    wardno = db.Column(db.String(80), nullable=False)
+    zip = db.Column(db.String(80), nullable=False)
     statusflag = db.Column(db.String(80), nullable=False)
-    statusMessage = db.Column(db.String(150), nullable=False)
+    statusmessage = db.Column(db.String(150), nullable=False)
     date = db.Column(db.String(12), nullable=True)
 
 # TODO: Register route to be written
@@ -91,30 +99,30 @@ def requestPost():
     # TODO: Check for active session
     if ('logged_in' in session and session['logged_in'] == True):
         response = Department.query.filter_by(email = session['user_email']).all()
+        return render_template('dashboard.html', response=response)
         if(request.method == 'POST'):
-            pass
+            name = request.form.get('name')
+            email = request.form.get('email')
+            address = request.form.get('address')
+            city = request.form.get('city')
+            wardno = request.form.get('wardno')
+            zip = request.form.get('zip')
+            subject = request.form.get('subject')
+            message = request.form.get('editordata')
+            entry = Department(name=name, email=email, address=address,  zip=zip, city=city, wardno=wardno, subject=subject, details=message, statusflag=-1, statusmessage="Submitted", date=datetime.now())
+            db.session.add(entry)
+            db.session.commit()
             # TODO:Get all form response from user
-        if (response.status == -1):
-            message = "Your have not submitted any request"
-        if(response.status==0):
-            message = "Your issue is yet to be seen"
-        if(response.status==1):
             response = Department.query.filter_by(email=session['user_email']).all()
-            message = response.statusMessage
-            return render_template('dashboard.html', message=message)
+            return render_template('dashboard.html', response=response)
     else:
-        return ('/login')
+        return redirect('/login')
 
 
 # TODO: Destroy session ( Logout Function)
 
 @app.route("/logout")
 def logout():
-    if((session['logged_in'] != True)):
-        return redirect('/login')
-    else:
-        print(session['logged_in'])
-        print(session['user_email'])
         session.pop('logged_in')
         session.pop('user_email')
         flash("Logged Out Successfully!", "success")
