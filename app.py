@@ -2,19 +2,20 @@ from flask import Flask, render_template,request, redirect, session, flash
 # TODO: Flash message config & Session setup
 from flask_sqlalchemy import SQLAlchemy
 # from werkzeug.utils import secure_filename
+from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from passlib.hash import sha256_crypt
 from datetime import datetime
-import json, requests
+# import json
 # import os
 
 
 app = Flask(__name__)
 app.secret_key = 'f9bf78b9a18ce6d46a0cd2b0b86df9da'
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:@localhost/bytecodeVelocity"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:@localhost/bytecodevelocity"
 db = SQLAlchemy(app)
 
 
-class Adminlogin(db.Model):
+class Adminlogin(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     phone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(20), nullable=False)
@@ -26,13 +27,39 @@ class Adminlogin(db.Model):
     wardno = db.Column(db.String(500), nullable=False)
 
 
-class Department(db.Model):
+class Department(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    statusflag = db.Column(db.String(80), nullable=False)
-    statusMessage = db.Column(db.String(150), nullable=False)
+    name = db.Column(db.String(80), nullable=False)
+    address = db.Column(db.String(80), nullable=False)
+    city = db.Column(db.String(80), nullable=False)
+    subject = db.Column(db.String(80), nullable=False)
+    details = db.Column(db.String(500), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
+    wardno = db.Column(db.String(80), nullable=False)
+    zip = db.Column(db.String(80), nullable=False)
+    statusmessage = db.Column(db.String(150), nullable=False)
     date = db.Column(db.String(12), nullable=True)
 
 # TODO: Register route to be written
+# login required decorator
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('You need to login first.')
+            return redirect(url_for('login'))
+    return wrap
+
+
+db.init_app(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def user_loader(user_id):
+    return Adminlogin.query.get(user_id)
 
 @app.route('/')
 def homePage():
@@ -42,7 +69,7 @@ def homePage():
 @app.route('/register', methods = ['GET', 'POST'])
 def registerPage():
     # TODO: Check for active session
-    if ('logged_in' in session and session['logged_in'] == True):
+    if current_user.is_authenticated:
         return redirect('/requestPost')
     if(request.method=='POST'):
         email = request.form.get('emailid')
@@ -55,15 +82,14 @@ def registerPage():
         db.session.add(entry)
         db.session.commit()
         session['logged_in'] = True
-        session['user_email'] = email
-        flash("Registration Successfull", "success")
+        flash("Registration Successful", "success")
     return render_template('signup.html')
 
 
 @app.route('/login', methods = ['GET', 'POST'])
 def loginPage():
     # TODO: Check for active session
-    if ('logged_in' in session and session['logged_in'] == True):
+    if current_user.is_authenticated:
         return redirect('/requestPost')
     if (request.method == 'POST'):
         email = request.form.get('email')
@@ -74,7 +100,7 @@ def loginPage():
             updateloginTime.lastlogin = datetime.now()
             # TODO:Invoke new session
             session['logged_in'] = True
-            session['user_email'] = email
+            session['email'] = email
             db.session.commit()
             return redirect('/requestPost')
             # TODO:Add a invalid login credentials message using flash
@@ -89,37 +115,40 @@ def loginPage():
 @app.route('/requestPost', methods = ['GET', 'POST'])
 def requestPost():
     # TODO: Check for active session
-    if ('logged_in' in session and session['logged_in'] == True):
-        response = Department.query.filter_by(email = session['user_email']).all()
-        if(request.method == 'POST'):
-            pass
-            # TODO:Get all form response from user
-        if (response.status == -1):
-            message = "Your have not submitted any request"
-        if(response.status==0):
-            message = "Your issue is yet to be seen"
-        if(response.status==1):
-            response = Department.query.filter_by(email=session['user_email']).all()
-            message = response.statusMessage
-            return render_template('dashboard.html', message=message)
+    if current_user.is_authenticated:
+        response = Department.query.filter_by(email=session['email']).first()
+        return render_template('dashboard.html', response=response)
+        # TODO:Get all form response from user
+        response = Department.query.filter_by(email=session['email']).all()
+        return render_template('dashboard.html', response=response)
     else:
-        return ('/login')
+        return redirect('/')
 
-
-# TODO: Destroy session ( Logout Function)
+@app.route('/submitRequest', methods = ['GET', 'POST'])
+def submitRequest():
+    if(request.method == 'POST'):
+        name = request.form.get('name')
+        print(name)
+        emaild = request.form.get('email')
+        address = request.form.get('address')
+        city = request.form.get('city')
+        wardno = request.form.get('wardno')
+        zip = request.form.get('zip')
+        subject = request.form.get('subject')
+        editordata = request.form.get('editordata')
+        print(editordata)
+        entry = Department(name=name, email=emaild, address=address, zip=zip, city=city, wardno=wardno, subject=subject, details=editordata, statusmessage="Submitted", date=datetime.now())
+        db.session.add(entry)
+        db.session.commit()
+    return redirect('/requestPost')
 
 @app.route("/logout")
 def logout():
-    if((session['logged_in'] != True)):
-        return redirect('/login')
-    else:
-        print(session['logged_in'])
-        print(session['user_email'])
+        session.pop('email')
         session.pop('logged_in')
-        session.pop('user_email')
+        logout_user()
         flash("Logged Out Successfully!", "success")
         return redirect('/login')
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
