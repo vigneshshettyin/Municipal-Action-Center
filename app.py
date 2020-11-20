@@ -69,7 +69,7 @@ def homePage():
 @app.route('/register', methods = ['GET', 'POST'])
 def registerPage():
     # TODO: Check for active session
-    if current_user.is_authenticated::
+    if current_user.is_authenticated:
         return redirect('/requestPost')
     if(request.method=='POST'):
         email = request.form.get('emailid')
