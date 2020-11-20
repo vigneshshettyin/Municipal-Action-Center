@@ -17,12 +17,12 @@
        <div class="form-container" >
            <h3>Sign Up</h3>
            <form class="signup-form" action="/register" method="post">
-               <input type="text" placeholder="Email" name="emailid">
+               <input type="text" placeholder="Email" name="emailid" required>
                <div class="tooltip">
-               <input  type="date" placeholder="D.O.B" name="dob">
+               <input  type="date" placeholder="D.O.B" name="dob" required>
                <span class="tooltiptext">D.O.B</span></div><br>
-               <input type="password" placeholder="Password" name="password">
-               <input list="gender" name="gender" placeholder="Gender">
+               <input type="password" placeholder="Password" name="password" required>
+               <input list="gender" name="gender" placeholder="Gender" required>
                <datalist id="gender">
                  <option value="Male">
                  <option value="Female">
@@ -30,8 +30,8 @@
                  <option value="Prefer not to say">
                    
                </datalist><br>
-               <input type="tel" placeholder="Mobile No" name="mobileno">
-               <input type="number" placeholder="Ward No" name="wardno"><br>
+               <input type="tel" placeholder="Mobile No" name="mobileno" required>
+               <input type="number" placeholder="Ward No" name="wardno" required><br>
 {#               <input type="submit" name="submit" value="Log In">#}
                <input type="submit" name="signin"  value="Sign up">
            </form>

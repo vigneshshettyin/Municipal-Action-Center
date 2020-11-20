@@ -64,8 +64,7 @@ def registerPage():
 def loginPage():
     # TODO: Check for active session
     if ('logged_in' in session and session['logged_in'] == True):
-        response = Department.query.filter_by().all()
-        return render_template('dashboard.html', response=response)
+        return redirect('/requestPost')
     if (request.method == 'POST'):
         email = request.form.get('email')
         password = request.form.get('password')
@@ -73,27 +72,11 @@ def loginPage():
         if((response != None) and ( response.email == email ) and ( sha256_crypt.verify(password, response.password )==1)):
             updateloginTime = Adminlogin.query.filter_by(email=email).first()
             updateloginTime.lastlogin = datetime.now()
-            updateloginTime.userType = "user"
-            ip_address = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
-            auth = "4ec76748-4cf5-43ec-a55e-a04a6cb8a1b3"
-            url = 'https://ipfind.co/?auth=' + auth + '&ip=' + ip_address
-            # print(url)
-            r = requests.get(url)
-            j = json.loads(r.text)
-            # print(j)
-            if (j['error'] == "Invalid IP Address"):
-                city = "NA"
-                country = "NA"
-            else:
-                city = j["city"]
-                country = j["country"]
-            db.session.commit()
             # TODO:Invoke new session
             session['logged_in'] = True
             session['user_email'] = email
-            # TODO: Pull all posts from db and return it
-            response = Department.query.filter_by().all()
-            return render_template('dashboard.html', response=response)
+            db.session.commit()
+            return redirect('/requestPost')
             # TODO:Add a invalid login credentials message using flash
         else:
             # if (response == None or (sha256_crypt.verify(password, response.password) != 1)):
@@ -111,8 +94,10 @@ def requestPost():
         if(request.method == 'POST'):
             pass
             # TODO:Get all form response from user
+        if (response.status == -1):
+            message = "Your have not submitted any request"
         if(response.status==0):
-            message="Your issue is yet to be seen"
+            message = "Your issue is yet to be seen"
         if(response.status==1):
             response = Department.query.filter_by(email=session['user_email']).all()
             message = response.statusMessage
