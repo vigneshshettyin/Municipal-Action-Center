@@ -9,28 +9,25 @@ import json, requests
 
 
 app = Flask(__name__)
-
+app.secret_key = 'f9bf78b9a18ce6d46a0cd2b0b86df9da'
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:@localhost/bytecodeVelocity"
 db = SQLAlchemy(app)
 
 
 class Adminlogin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(20), nullable=False)
-    password = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.String(200), nullable=False)
     lastlogin = db.Column(db.String(12), nullable=True)
     userType = db.Column(db.String(12), nullable=True)
+    gender = db.Column(db.String(12), nullable=True)
+    dob = db.Column(db.String(500), nullable=False)
+    wardno = db.Column(db.String(500), nullable=False)
 
 
 class Department(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
-    phone = db.Column(db.String(80), nullable=False)
-    dob = db.Column(db.String(500), nullable=False)
-    gender = db.Column(db.String(500), nullable=False)
-    wardno = db.Column(db.String(500), nullable=False)
     statusflag = db.Column(db.String(80), nullable=False)
     statusMessage = db.Column(db.String(150), nullable=False)
     date = db.Column(db.String(12), nullable=True)
@@ -48,16 +45,17 @@ def registerPage():
     if ('logged_in' in session and session['logged_in'] == True):
         return redirect('/requestPost')
     if(request.method=='POST'):
-        name = request.form.get('name')
         email = request.form.get('emailid')
         password = sha256_crypt.encrypt(request.form.get('password'))
         dob = request.form.get('dob')
         gender = request.form.get('gender')
         mobileno = request.form.get('mobileno')
         wardno = request.form.get('wardno')
-        entry = Department(name=name, phone=mobileno, message=0, date=datetime.now(), email=email, password=password, dob=dob, gender=gender, statusflag=0, wardno=wardno )
+        entry = Adminlogin(phone=mobileno, lastlogin=datetime.now(), email=email, password=password, dob=dob, gender=gender, wardno=wardno, userType="user")
         db.session.add(entry)
         db.session.commit()
+        session['logged_in'] = True
+        session['user_email'] = email
         flash("Registration Successfull", "success")
     return render_template('signup.html')
 
@@ -130,6 +128,8 @@ def logout():
     if((session['logged_in'] != True)):
         return redirect('/login')
     else:
+        print(session['logged_in'])
+        print(session['user_email'])
         session.pop('logged_in')
         session.pop('user_email')
         flash("Logged Out Successfully!", "success")
