@@ -2,6 +2,7 @@ from flask import Flask, render_template,request, redirect, session, flash
 # TODO: Flash message config & Session setup
 from flask_sqlalchemy import SQLAlchemy
 # from werkzeug.utils import secure_filename
+from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from passlib.hash import sha256_crypt
 from datetime import datetime
 # import json
@@ -14,7 +15,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:@localhost/bytecodevelocit
 db = SQLAlchemy(app)
 
 
-class Adminlogin(db.Model):
+class Adminlogin(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     phone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(20), nullable=False)
@@ -26,7 +27,7 @@ class Adminlogin(db.Model):
     wardno = db.Column(db.String(500), nullable=False)
 
 
-class Department(db.Model):
+class Department(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     address = db.Column(db.String(80), nullable=False)
@@ -40,6 +41,25 @@ class Department(db.Model):
     date = db.Column(db.String(12), nullable=True)
 
 # TODO: Register route to be written
+# login required decorator
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('You need to login first.')
+            return redirect(url_for('login'))
+    return wrap
+
+
+db.init_app(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def user_loader(user_id):
+    return Adminlogin.query.get(user_id)
 
 @app.route('/')
 def homePage():
@@ -49,7 +69,7 @@ def homePage():
 @app.route('/register', methods = ['GET', 'POST'])
 def registerPage():
     # TODO: Check for active session
-    if ('logged_in' in session and session['logged_in'] == True):
+    if current_user.is_authenticated::
         return redirect('/requestPost')
     if(request.method=='POST'):
         email = request.form.get('emailid')
@@ -62,14 +82,14 @@ def registerPage():
         db.session.add(entry)
         db.session.commit()
         session['logged_in'] = True
-        flash("Registration Successfull", "success")
+        flash("Registration Successful", "success")
     return render_template('signup.html')
 
 
 @app.route('/login', methods = ['GET', 'POST'])
 def loginPage():
     # TODO: Check for active session
-    if ('logged_in' in session and session['logged_in'] == True):
+    if current_user.is_authenticated:
         return redirect('/requestPost')
     if (request.method == 'POST'):
         email = request.form.get('email')
@@ -95,7 +115,7 @@ def loginPage():
 @app.route('/requestPost', methods = ['GET', 'POST'])
 def requestPost():
     # TODO: Check for active session
-    if('logged_in' in session and session['logged_in'] == True):
+    if current_user.is_authenticated:
         response = Department.query.filter_by(email=session['email']).first()
         return render_template('dashboard.html', response=response)
         # TODO:Get all form response from user
@@ -126,6 +146,7 @@ def submitRequest():
 def logout():
         session.pop('email')
         session.pop('logged_in')
+        logout_user()
         flash("Logged Out Successfully!", "success")
         return redirect('/login')
 
