@@ -7,11 +7,11 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'f9bf78b9a18ce6d46a0cd2b0b86df9da'
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:@localhost/bytecodeVelocity"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:@localhost/bytecodevelocity"
 db = SQLAlchemy(app)
 
 
-class Adminlogin(db.Model):
+class Adminlogin(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     phone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(20), nullable=False)
@@ -28,7 +28,7 @@ class Dashboard(db.Model):
     password = db.Column(db.String(500), nullable=False)
 
 
-class Department(db.Model):
+class Department(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     address = db.Column(db.String(80), nullable=False)
@@ -42,6 +42,25 @@ class Department(db.Model):
     date = db.Column(db.String(12), nullable=True)
 
 # TODO: Register route to be written
+# login required decorator
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('You need to login first.')
+            return redirect(url_for('login'))
+    return wrap
+
+
+db.init_app(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def user_loader(user_id):
+    return Adminlogin.query.get(user_id)
 
 @app.route('/')
 def homePage():
@@ -51,7 +70,7 @@ def homePage():
 @app.route('/register', methods = ['GET', 'POST'])
 def registerPage():
     # TODO: Check for active session
-    if ('logged_in' in session and session['logged_in'] == True):
+    if current_user.is_authenticated:
         return redirect('/requestPost')
     if(request.method=='POST'):
         email = request.form.get('emailid')
@@ -64,14 +83,14 @@ def registerPage():
         db.session.add(entry)
         db.session.commit()
         session['logged_in'] = True
-        flash("Registration Successfull", "success")
+        flash("Registration Successful", "success")
     return render_template('signup.html')
 
 
 @app.route('/login', methods = ['GET', 'POST'])
 def loginPage():
     # TODO: Check for active session
-    if ('logged_in' in session and session['logged_in'] == True):
+    if current_user.is_authenticated:
         return redirect('/requestPost')
     if (request.method == 'POST'):
         email = request.form.get('email')
@@ -190,6 +209,7 @@ def submitRequest():
 @app.route("/logout")
 def logout():
         session.pop('logged_in')
+        logout_user()
         flash("Logged Out Successfully!", "success")
         return redirect('/login')
 
