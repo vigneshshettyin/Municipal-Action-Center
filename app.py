@@ -64,7 +64,6 @@ def registerPage():
         entry = Adminlogin(phone=mobileno, lastlogin=datetime.now(), email=email, password=password, dob=dob, gender=gender, wardno=wardno, usertype="user")
         db.session.add(entry)
         db.session.commit()
-        session['logged_in'] = True
         flash("Registration Successfull", "success")
     return render_template('signup.html')
 
@@ -73,7 +72,7 @@ def registerPage():
 def loginPage():
     # TODO: Check for active session
     if ('logged_in' in session and session['logged_in'] == True):
-        return redirect('/requestPost')
+        return redirect('/viewRequests')
     if (request.method == 'POST'):
         email = request.form.get('email')
         password = request.form.get('password')
@@ -84,9 +83,10 @@ def loginPage():
             # TODO:Invoke new session
             session['logged_in'] = True
             session['email'] = email
+            session['wardno'] = updateloginTime.wardno
             session['usertype'] = "user"
             db.session.commit()
-            return redirect('/requestPost')
+            return redirect('/viewRequests')
             # TODO:Add a invalid login credentials message using flash
         else:
             # if (response == None or (sha256_crypt.verify(password, response.password) != 1)):
@@ -159,14 +159,11 @@ def edit(id):
 @app.route("/upvote/<string:id>", methods = ['GET', 'POST'])
 def upVote(id):
     if ('logged_in' in session and session['logged_in'] == True):
-        if request.method == 'POST':
-            post = Department.query.filter_by(id=id).first()
-            post.upvote = int(post.upvote) + 1
-            db.session.commit()
-            # flash("Post edited Successfully!", "success")
-            return redirect('/upvote/'+id)
         post = Department.query.filter_by(id=id).first()
-        return render_template('upvote.html', post=post, id=id)
+        post.upvote = post.upvote + 1
+        db.session.commit()
+        # flash("Post edited Successfully!", "success")
+        return redirect('/login')
     return redirect('/login')
 
 
@@ -176,6 +173,16 @@ def requestPost():
     if ('logged_in' in session and session['logged_in'] == True and (session['usertype'] == "user")):
         response = Department.query.filter_by(email=session['email']).first()
         return render_template('dashboard.html', response=response)
+        # TODO:Get all form response from user
+    else:
+        return redirect('/login')
+
+@app.route('/viewRequests', methods = ['GET', 'POST'])
+def viewRequests():
+    # TODO: Check for active session
+    if ('logged_in' in session and session['logged_in'] == True and (session['usertype'] == "user")):
+        post = Department.query.filter_by(wardno=session['wardno'])
+        return render_template('upvote.html', post=post)
         # TODO:Get all form response from user
     else:
         return redirect('/login')

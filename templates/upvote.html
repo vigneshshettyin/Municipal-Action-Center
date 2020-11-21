@@ -6,6 +6,7 @@
     <!--Google Fonts and Bootstrap cdn-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;800;900&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="https://vigneshshettyin.github.io/Portfolio-Site/img/favicon/favicon.ico">
 
     <link rel="shortcut icon" href="/static/img/favicon-01.png" type="image/x-icon">  
  
@@ -40,7 +41,7 @@
           <h1 class="display-4" style="font-family: 'Montserrat';font-weight: 500;">Submit an issue</h1>
           <p class="lead" style="font-family: 'Montserrat';font-weight: 500;">If you see your issue listed below, Please click the thumbs up button to upvote it.</p>
           <hr class="my-4">
-          <button class="btn rounded-pill" style="font-family: 'Montserrat';font-weight: 400;background: #7579e7;color: #fff;">Submit Issue</button>
+         <a href="/requestPost"><button class="btn rounded-pill" style="font-family: 'Montserrat';font-weight: 400;background: #7579e7;color: #fff;">Submit Issue</button></a>
         </div>
       </div>
       <div class="row pt-2">
@@ -51,40 +52,15 @@
                   <!--Add cards here-->
                   <div class="card-body">
                     <div class="card " style="width: 80rem;background: #fdfdfd;border-radius: 20px;height: auto;">
-                        <div class="card-body" >
-                          <p class="card-title" style="font-family: 'Montserrat';float: left;font-weight: 700;font-size: 20px;color: #2E3D7D;"><img class="rounded-circle" alt="100x100" height="90px" width="90px" src="/static/img/face.jpg" data-holder-rendered="true">
-                            User 1
-                          </p>
-                          <div class="row">
-                            <div class="col">
-                              <div class="card-body">
-                                <div class="card " style="float: right;width: 60rem;background: #fdfdfd;border-radius: 20px;height: auto;">
-                                    <div class="card-body" >
-                                      <p class="card-title" style="font-family: 'Montserrat';float: left;font-weight: 700;font-size: 20px;color: #595b83;">
-                                        Complain Sub..
-                                        This is some random person complain format.
-                                      </p>
-                                      
-                                    </div>
-                                  </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="btn-group ml-2" role="group" style="float: right;">
-                              <button class="btn rounded-pill mt-4 px-4" style="background: #0f3460;font-family: 'Montserrat';font-weight: 500;color: #fff;"><i class="fas fa-thumbs-up"></i>
-                          </div>
-                          <div class="btn-group ml-2" role="group" style="float: right;">
-                            <button class="btn rounded-pill mt-4 px-4" style="background: #0f3460;font-family: 'Montserrat';font-weight: 500;color: #fff;">Read more</button>
-                          </div>
-                        </div>
-                      </div>
-                  </div>
-                  
+
+{#                        Start Loop #}
+                        {% for post in post %}
+
                   <div class="card-body">
                     <div class="card " style="width: 80rem;background: #fdfdfd;border-radius: 20px;height: auto;">
                         <div class="card-body" >
-                          <p class="card-title" style="font-family: 'Montserrat';float: left;font-weight: 700;font-size: 20px;color: #2E3D7D;"><img class="rounded-circle" alt="100x100" height="90px" width="90px" src="/static/img/face2.png" data-holder-rendered="true">
-                            User 2
+                          <p class="card-title" style="font-family: 'Montserrat';float: left;font-weight: 700;font-size: 20px;color: #2E3D7D;"><img class="rounded-circle" alt="100x100" height="90px" width="90px" src="{{url_for('static', filename='img/face4.png')}}" data-holder-rendered="true">
+                              {{ post.name}}
                           </p>
                           <div class="row">
                             <div class="col">
@@ -93,7 +69,7 @@
                                     <div class="card-body" >
                                       <p class="card-title" style="font-family: 'Montserrat';float: left;font-weight: 700;font-size: 20px;color: #595b83;">
                                         Complain Sub..
-                                        This is some random person complain format.
+                                          {{ post.subject}}
                                       </p>
                                       
                                     </div>
@@ -102,76 +78,20 @@
                             </div>
                           </div>
                           <div class="btn-group ml-2" role="group" style="float: right;">
-                              <button class="btn rounded-pill mt-4 px-4" style="background: #0f3460;font-family: 'Montserrat';font-weight: 500;color: #fff;"><i class="fas fa-thumbs-up"></i>
+                              <a href="/upvote/{{ post.id }}"><button class="btn rounded-pill mt-4 px-4" style="background: #0f3460;font-family: 'Montserrat';font-weight: 500;color: #fff;"><i class="fas fa-thumbs-up"></i></button></a>
                           </div>
                           <div class="btn-group ml-2" role="group" style="float: right;">
-                            <button class="btn rounded-pill mt-4 px-4" style="background: #0f3460;font-family: 'Montserrat';font-weight: 500;color: #fff;">Read more</button>
+                          <a href="/view/{{ post.id }}"><button class="btn rounded-pill mt-4 px-4" style="background: #0f3460;font-family: 'Montserrat';font-weight: 500;color: #fff;">Read more</button> </a>
                           </div>
                         </div>
                       </div>
                   </div>
-                  
-                  <div class="card-body">
-                    <div class="card " style="width: 80rem;background: #fdfdfd;border-radius: 20px;height: auto;">
-                        <div class="card-body" >
-                          <p class="card-title" style="font-family: 'Montserrat';float: left;font-weight: 700;font-size: 20px;color: #2E3D7D;"><img class="rounded-circle" alt="100x100" height="90px" width="90px" src="/static/img/face3.png" data-holder-rendered="true">
-                            User 3
-                          </p>
-                          <div class="row">
-                            <div class="col">
-                              <div class="card-body">
-                                <div class="card " style="float: right;width: 60rem;background: #fdfdfd;border-radius: 20px;height: auto;">
-                                    <div class="card-body" >
-                                      <p class="card-title" style="font-family: 'Montserrat';float: left;font-weight: 700;font-size: 20px;color: #595b83;">
-                                        Complain Sub..
-                                        This is some random person complain format.
-                                      </p>
-                                      
-                                    </div>
-                                  </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="btn-group ml-2" role="group" style="float: right;">
-                              <button class="btn rounded-pill mt-4 px-4" style="background: #0f3460;font-family: 'Montserrat';font-weight: 500;color: #fff;"><i class="fas fa-thumbs-up"></i>
-                          </div>
-                          <div class="btn-group ml-2" role="group" style="float: right;">
-                            <button class="btn rounded-pill mt-4 px-4" style="background: #0f3460;font-family: 'Montserrat';font-weight: 500;color: #fff;">Read more</button>
-                          </div>
-                        </div>
-                      </div>
-                  </div>
-              
-                  <div class="card-body">
-                    <div class="card " style="width: 80rem;background: #fdfdfd;border-radius: 20px;height: auto;">
-                        <div class="card-body" >
-                          <p class="card-title" style="font-family: 'Montserrat';float: left;font-weight: 700;font-size: 20px;color: #2E3D7D;"><img class="rounded-circle" alt="100x100" height="90px" width="90px" src="/static/img/face4.png" data-holder-rendered="true">
-                            User 4
-                          </p>
-                          <div class="row">
-                            <div class="col">
-                              <div class="card-body">
-                                <div class="card " style="float: right;width: 60rem;background: #fdfdfd;border-radius: 20px;height: auto;">
-                                    <div class="card-body" >
-                                      <p class="card-title" style="font-family: 'Montserrat';float: left;font-weight: 700;font-size: 20px;color: #595b83;">
-                                        Complain Sub..
-                                        This is some random person complain format.
-                                      </p>
-                                      
-                                    </div>
-                                  </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="btn-group ml-2" role="group" style="float: right;">
-                              <button class="btn rounded-pill mt-4 px-4" style="background: #0f3460;font-family: 'Montserrat';font-weight: 500;color: #fff;"><i class="fas fa-thumbs-up"></i>
-                          </div>
-                          <div class="btn-group ml-2" role="group" style="float: right;">
-                            <button class="btn rounded-pill mt-4 px-4" style="background: #0f3460;font-family: 'Montserrat';font-weight: 500;color: #fff;">Read more</button>
-                          </div>
-                        </div>
-                      </div>
-                  </div>
+
+                         {% endfor %}
+
+
+{#                        End Loop#}
+
                   
                   <!--Till here-->
                 </div>
