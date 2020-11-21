@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 20, 2020 at 10:12 AM
+-- Generation Time: Nov 20, 2020 at 05:36 PM
 -- Server version: 10.4.10-MariaDB
 -- PHP Version: 7.3.12
 
@@ -47,8 +47,29 @@ CREATE TABLE IF NOT EXISTS `adminlogin` (
 --
 
 INSERT INTO `adminlogin` (`id`, `phone`, `email`, `password`, `lastlogin`, `usertype`, `gender`, `dob`, `wardno`) VALUES
-(1, '6362490109', 'vigneshshettyalike@gmail.com', '$5$rounds=535000$LRZcoN3b4buOTZB/$32tu8LP9hPKU80BVvtZTYP5TfaTvYpnUllvEb/pnLE7', '2020-11-20 15:41:04', 'user', 'Male', '2020-11-21', '25'),
-(3, '6362490109', 'admin@gmail.com', '$5$rounds=535000$mRGSKBRpb07IHDM6$qmEUbA1CqHl/w9gTMglTbBYlla3.c0qolAs5s/25MT8', '2020-11-20 15:40:23', 'user', 'Male', '2020-11-10', '2');
+(1, '6362490109', 'vigneshshettyalike@gmail.com', '$5$rounds=535000$LRZcoN3b4buOTZB/$32tu8LP9hPKU80BVvtZTYP5TfaTvYpnUllvEb/pnLE7', '2020-11-20 21:14:07', 'user', 'Male', '2020-11-21', '25'),
+(3, '6362490109', 'admin@gmail.com', '$5$rounds=535000$mRGSKBRpb07IHDM6$qmEUbA1CqHl/w9gTMglTbBYlla3.c0qolAs5s/25MT8', '2020-11-20 23:01:33', 'user', 'Male', '2020-11-10', '2');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dashboard`
+--
+
+DROP TABLE IF EXISTS `dashboard`;
+CREATE TABLE IF NOT EXISTS `dashboard` (
+  `id` int(50) NOT NULL AUTO_INCREMENT,
+  `email` varchar(50) NOT NULL,
+  `password` varchar(500) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `dashboard`
+--
+
+INSERT INTO `dashboard` (`id`, `email`, `password`) VALUES
+(1, 'admin@gmail.com', '$5$rounds=535000$mRGSKBRpb07IHDM6$qmEUbA1CqHl/w9gTMglTbBYlla3.c0qolAs5s/25MT8');
 
 -- --------------------------------------------------------
 
@@ -70,7 +91,14 @@ CREATE TABLE IF NOT EXISTS `department` (
   `statusmessage` varchar(500) NOT NULL,
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `department`
+--
+
+INSERT INTO `department` (`id`, `name`, `address`, `city`, `subject`, `details`, `email`, `wardno`, `zip`, `statusmessage`, `date`) VALUES
+(18, 'Vignesh', 'Derabail, Konchady ', 'Mangalore', 'Internet', '<p>Please increase my internet speed as soon as possible.</p>', 'admin@gmail.com', '3', '575007', 'Submitted Hello, I am Vignesh Here', '2020-11-20 21:23:52');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
