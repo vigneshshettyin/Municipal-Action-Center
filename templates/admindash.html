@@ -42,6 +42,7 @@
       <th scope="col">ISSUE</th>
       <th scope="col">EMAIL</th>
       <th scope="col">WARD NO</th>
+        <th scope="col">UPVOTE</th>
       <th scope="col">RESOLVE</th>
       <th scope="col">DELETE</th>
     </tr>
@@ -56,6 +57,7 @@
       <td><a href="/view/{{ post.id }}"><button class="btn btn-primary"><i class="fa fa-file-text-o"></i></button></a></td>
       <td>{{ post.email }}</td>
       <td>{{ post.wardno }}</td>
+        <td>{{ post.upvote }}</td>
       <td><a href="/edit/{{ post.id }}"><button class="btn btn-success"><i class="fa fa-pencil-square-o"></i></button></a></td>
       <td><a href="/deleteIssue/{{ post.id }}"><button class="btn btn-danger"><i class="fa fa-close"></i></button></a></td>
     </tr>
