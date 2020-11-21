@@ -121,7 +121,8 @@
 
                       <p class="card-text" style="display: flex;word-wrap: break-word;">
                         <h4 style="font-family: 'Montserrat';font-weight: 600;font-size: large;color: #ffffff;">Sub : {{ response.subject }}</h4>
-                         <h4 style="font-family: 'Montserrat';font-weight: 600;font-size: large;color: #25741F;">Status : {{ response.statusmessage}}</h4>
+                         <h4 style="font-family: 'Montserrat';font-weight: 600;font-size: large;color: #25741F;">Status : <input type='hidden' id='data' value='{{ response.statusmessage}}'></input>
+<div id='display'><script> document.getElementById('display').innerHTML = document.getElementById('data').value  </script></div></h4>
                       </p>
                     </div>
                   </div>
