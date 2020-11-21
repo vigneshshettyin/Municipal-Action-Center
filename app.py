@@ -35,6 +35,7 @@ class Department(db.Model):
     city = db.Column(db.String(80), nullable=False)
     subject = db.Column(db.String(80), nullable=False)
     details = db.Column(db.String(500), nullable=False)
+    upvote = db.Column(db.Integer, nullable=True)
     email = db.Column(db.String(50), nullable=False)
     wardno = db.Column(db.String(80), nullable=False)
     zip = db.Column(db.String(80), nullable=False)
@@ -155,6 +156,20 @@ def edit(id):
     return redirect('/loginadmin')
 
 
+@app.route("/upvote/<string:id>", methods = ['GET', 'POST'])
+def upVote(id):
+    if ('logged_in' in session and session['logged_in'] == True):
+        if request.method == 'POST':
+            post = Department.query.filter_by(id=id).first()
+            post.upvote = int(post.upvote) + 1
+            db.session.commit()
+            # flash("Post edited Successfully!", "success")
+            return redirect('/upvote/'+id)
+        post = Department.query.filter_by(id=id).first()
+        return render_template('upvote.html', post=post, id=id)
+    return redirect('/login')
+
+
 @app.route('/requestPost', methods = ['GET', 'POST'])
 def requestPost():
     # TODO: Check for active session
@@ -180,7 +195,7 @@ def submitRequest():
         editordata = request.form.get('editordata')
         print(editordata)
         entry = Department(name=name, email=emaild, address=address, zip=zip, city=city, wardno=wardno, subject=subject,
-                           details=editordata, statusmessage="Submitted", date=datetime.now())
+                           details=editordata, statusmessage="Submitted", upvote = 0, date=datetime.now())
         db.session.add(entry)
         db.session.commit()
     return redirect('/requestPost')
