@@ -7,7 +7,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'f9bf78b9a18ce6d46a0cd2b0b86df9da'
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:@localhost/bytecodeVelocity"
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///mac.db"
 db = SQLAlchemy(app)
 
 
@@ -211,7 +211,7 @@ def submitRequest():
 
 @app.route("/logout")
 def logout():
-        session.pop('logged_in')
+        session.pop('logged_in', None)
         flash("Logged Out Successfully!", "success")
         return redirect('/login')
 
