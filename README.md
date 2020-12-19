@@ -47,11 +47,11 @@ We highly recommend to read through the:<br>
 
 <table><tr><td valign="top" width="50%">
 
-<iframe width="853" height="480" src="https://www.youtube.com/embed/yXw61hPStas" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![MAC](http://img.youtube.com/vi/yXw61hPStas/0.jpg)](http://www.youtube.com/watch?v=yXw61hPStas "MAC MOCKUP")
 
 </td><td valign="top" width="50%">
 
-<iframe width="805" height="441" src="https://www.youtube.com/embed/T0rcRdUSnYg?list=PLGtNXSAD7dWuCJgujxOK01Pqsz7DxgNH0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![MAC](http://img.youtube.com/vi/T0rcRdUSnYg/0.jpg)](http://www.youtube.com/watch?v=T0rcRdUSnYg "MAC DEMO")
 
 </td></tr></table>  
 
