@@ -28,7 +28,7 @@ $ cd Municipal-Action-Center
 # Install Requirements
 $ pip install requirements.txt
 
-#Start development server & open 
+#Start development server
  http://127.0.0.1
 ```
 ## Live Deployment 📦 
@@ -66,7 +66,7 @@ This project is licensed under the GPL-3.0 License. See the [LICENSE](./LICENSE)
 
 
 ## For the Future 
-If you can help us with these. Please don't hesitate to open a [Pull Request](https://github.com/vigneshshettyin/Online-Certificate-Generation-Verification/pulls).
+If you can help us with these. Please don't hesitate to open a [Pull Request](https://github.com/vigneshshettyin/Municipal-Action-Center/pulls).
 
 ## Cool Developers🚧
 
