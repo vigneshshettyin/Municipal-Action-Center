@@ -70,13 +70,8 @@ If you can help us with these. Please don't hesitate to open a [Pull Request](ht
 
 ## Cool Developers🚧
 
-<table>
-  <tr>
-    <td align="center"><a href="https://www.linkedin.com/in/vigneshshettyin/"><img src="https://avatars.githubusercontent.com/u/77713888?s=460&u=28a461a4ae6826d8daa5074823b7753a0385e2fa&v=4" width="100px;" alt=""/><br /><sub><b>Vignesh Shetty</b></sub></a></td>
-       <td align="center"><a href="https://www.linkedin.com/in/shanwill-pinto-b286b7184/"><img src="https://avatars1.githubusercontent.com/u/62848565?s=400&u=720456e69554e95661703a6ad9360c92a715b478&v=4" width="100px;" alt="Shanwill Pinto"/><br /><sub><b>Shanwill Pinto</b></sub></a></td>
-    <td align="center"><a href="https://www.linkedin.com/in/simonnepinto/"><img src="https://avatars1.githubusercontent.com/u/53074235?s=400&v=4" width="100px;" alt="Simonne Letetia Pinto"/><br /><sub><b>Simonne Letetia Pinto</b></sub></a></td>
-    <td align="center"><a href="https://www.linkedin.com/in/sriganesh-rao-1b6a921a5/"><img src="https://media-exp1.licdn.com/dms/image/C5603AQFLBMYdNp0pag/profile-displayphoto-shrink_200_200/0/1585463430790?e=1613606400&v=beta&t=lDFDeR-FUH2LEN1wUVzCY3V2B_yTPYwz3kJBTLGXADc" width="100px;" alt="Sriganesh Rao"/><br /><sub><b>Sriganesh Rao</b></sub></a></td>
-  </tr>
-</table>
+<a href="https://github.com/data-charya/Bytecode-Velocity/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=data-charya/Bytecode-Velocity" />
+</a>
 
 
