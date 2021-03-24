@@ -31,11 +31,11 @@ $ pip install requirements.txt
 #Start development server
  http://127.0.0.1
 ```
-## Live Deployment 📦 
+<!--## Live Deployment 📦 
 
- Click Here to view the deployment!
+ <!--Click Here to view the deployment!
  
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://municipalac.herokuapp.com/)
+<!--[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://municipalac.herokuapp.com/)
  
 
 When you are done with the setup, you should host your website online.
